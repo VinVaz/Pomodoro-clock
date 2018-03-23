@@ -17,31 +17,24 @@ function everySecond(){
 	if(mySeconds.toString().length<2) mySeconds = "0" + mySeconds;
 	if(myHours.toString().length<2) myHours = "0" + myHours;
 	myTime = myHours + ":" + mySeconds;
-	turnNumToDigital();
+	var aux = myHours.toString() + mySeconds.toString();
+	turnNumToDigital(aux);
 	if(myTime==breakTime){
 		clearInterval(pomodoroClock);
     }
 	mySeconds--;
 }
 //this is just a test
-function turnNumToDigital(){
-
-    if(myTime=="00:00") putNumber.visibleById("num0digit4");
-	if(myTime=="00:01") putNumber.visibleById("num1digit4");
-	if(myTime=="00:02") putNumber.visibleById("num2digit4");
-	if(myTime=="00:03") putNumber.visibleById("num3digit4");
-	if(myTime=="00:04") putNumber.visibleById("num4digit4");
-	if(myTime=="00:05") putNumber.visibleById("num5digit4");
-}
-/*{
-	var id = "";
+function turnNumToDigital(aux){
+    var id = "";
 	var arr = aux.split("");
-	for(var i = 1; i < arr.length+1; i++){
-	  id = "num" + arr[i] + "digit" + i;
+	
+	clearNumbers();
+	for(var i = 0; i < arr.length; i++){
+	  id = "num" + arr[i] + "digit" + (i+1);
+	  putNumber.visibleById(id);
     }
-    putNumber.visibleById(id);
-}*/
-
+}
 
 //clear sgv elements by their ID
 function clearById(id){
@@ -63,7 +56,6 @@ function clearNumbers(){
 }
 var putNumber = {
 	visibleById: function(id){
-		clearNumbers();
 		visibleById(id)
     }
 }
