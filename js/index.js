@@ -1,5 +1,5 @@
 var pomodoroClock = setInterval(everySecond, 1000);
-const startTime = "00:05";
+const startTime = "00:10";
 const breakTime = "00:00";
 var timeArr = startTime.split(":");
 var mySeconds = timeArr[1];
@@ -17,17 +17,17 @@ function everySecond(){
 	if(mySeconds.toString().length<2) mySeconds = "0" + mySeconds;
 	if(myHours.toString().length<2) myHours = "0" + myHours;
 	myTime = myHours + ":" + mySeconds;
-	var aux = myHours.toString() + mySeconds.toString();
-	turnNumToDigital(aux);
+	var setOfDigits = myHours.toString() + mySeconds.toString();
+	turnNumToDigital(setOfDigits);
 	if(myTime==breakTime){
 		clearInterval(pomodoroClock);
     }
 	mySeconds--;
 }
 //this is just a test
-function turnNumToDigital(aux){
+function turnNumToDigital(setOfDigits){
     var id = "";
-	var arr = aux.split("");
+	var arr =setOfDigits.split("");
 	
 	clearNumbers();
 	for(var i = 0; i < arr.length; i++){
