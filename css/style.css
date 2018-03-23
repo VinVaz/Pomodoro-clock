@@ -1,12 +1,10 @@
+body{
+	background: #000;
+}
 #main{
   text-align: center;
   font-size: 100px;  
 }
-#parallelogram{
-	width:150px;
-	height: 100px;
-	-webkit-transform: skew(20deg);
-	 -moz-transform: skew(20deg);
-	  -o-transform: skew(20deg);
-	background: #ff0000;  
+#digit2centerup{
+	fill: #FE7606 !important;
 }

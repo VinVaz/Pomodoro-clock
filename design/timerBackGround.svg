@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <link rel="stylesheet" href="css/style.css">
-   <link href="timerBackGround.html">
-</head>
-<body>
-  <!-- SVG goes here -->
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
@@ -1593,11 +1585,3 @@
     </g>
   </g>
 </svg>
-
-  <!-- SVG ends here -->
-  <div>
-    <h1 id="main"></h1>
-  </div>
-<script src="js/index.js"></script>
-</body>
-</html>
