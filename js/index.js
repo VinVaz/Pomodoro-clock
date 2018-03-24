@@ -1,9 +1,9 @@
 var pomodoroClock = setInterval(everySecond, 1000);
-const startTime = "00:10";
+const startTime = "01:10";
 const breakTime = "00:00";
 var timeArr = startTime.split(":");
 var mySeconds = timeArr[1];
-var myHours = timeArr[0];
+var myMinutes = timeArr[0];
 var myTime = 0;
 
 clearNumbers();
@@ -12,12 +12,12 @@ function everySecond(){
 
 	if(mySeconds<0){
 		mySeconds = 59;
-		myHours--;
+		myMinutes--;
 	}
 	if(mySeconds.toString().length<2) mySeconds = "0" + mySeconds;
-	if(myHours.toString().length<2) myHours = "0" + myHours;
-	myTime = myHours + ":" + mySeconds;
-	var setOfDigits = myHours.toString() + mySeconds.toString();
+	if(myMinutes.toString().length<2) myMinutes = "0" + myMinutes;
+	myTime = myMinutes + ":" + mySeconds;
+	var setOfDigits = myMinutes.toString() + mySeconds.toString();
 	turnNumToDigital(setOfDigits);
 	if(myTime==breakTime){
 		clearInterval(pomodoroClock);
