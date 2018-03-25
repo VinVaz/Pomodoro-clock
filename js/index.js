@@ -7,7 +7,7 @@ var myMinutes = timeArr[0];
 var myTime = 0;
 
 clearNumbers();
-//the main function that makes the timer work
+//the main function that makes the clock work
 function everySecond(){
 	  if(mySeconds<0){
 		mySeconds = 59;
@@ -23,10 +23,18 @@ function everySecond(){
       }
 	mySeconds--;
 }
-document.getElementById("startButton").onclick = function(){
-    clearInterval(pomodoroClock);
-}
-
+//stops or starts the counter when the button's pressed
+var hasInterval = true;
+document.getElementById("startButton").addEventListener("click", function(){
+    if(hasInterval){
+		clearInterval(pomodoroClock);
+	    hasInterval = false;
+	}
+	else{
+	    pomodoroClock = setInterval(everySecond, 1000);
+		hasInterval = true;
+	}
+})
 //gets a set of digits thats represents the time and turn the into digital number on display
 function turnNumToDigital(setOfDigits){
     var id = "";
@@ -63,7 +71,7 @@ var putNumber = {
     }
 }
 
-//turnSessionNumToDigital(25);
+//DEMO
 //this section controls the seccion length display
 //try to implement some polymorphism here later
 
@@ -107,4 +115,4 @@ document.getElementById("minusSessionButton").onclick = function(){
 		turnSessionNumToDigital(anyTime);
 		atp--;	
 }
-
+//END of DEMO
