@@ -1,5 +1,5 @@
 var pomodoroClock = setInterval(everySecond, 1000);
-const startTime = "01:10";
+const startTime = "23:00";
 const breakTime = "00:00";
 var timeArr = startTime.split(":");
 var mySeconds = timeArr[1];
@@ -9,22 +9,25 @@ var myTime = 0;
 clearNumbers();
 //the main function that makes the timer work
 function everySecond(){
-
-	if(mySeconds<0){
+	  if(mySeconds<0){
 		mySeconds = 59;
 		myMinutes--;
-	}
-	if(mySeconds.toString().length<2) mySeconds = "0" + mySeconds;
-	if(myMinutes.toString().length<2) myMinutes = "0" + myMinutes;
+	  }
+	  if(mySeconds.toString().length<2) mySeconds = "0" + mySeconds;
+	  if(myMinutes.toString().length<2) myMinutes = "0" + myMinutes;
 	myTime = myMinutes + ":" + mySeconds;
 	var setOfDigits = myMinutes.toString() + mySeconds.toString();
 	turnNumToDigital(setOfDigits);
-	if(myTime==breakTime){
+	  if(myTime==breakTime){
 		clearInterval(pomodoroClock);
-    }
+      }
 	mySeconds--;
 }
-//this is just a test
+document.getElementById("startButton").onclick = function(){
+    clearInterval(pomodoroClock);
+}
+
+//gets a set of digits thats represents the time and turn the into digital number on display
 function turnNumToDigital(setOfDigits){
     var id = "";
 	var arr =setOfDigits.split("");
@@ -58,5 +61,50 @@ var putNumber = {
 	visibleById: function(id){
 		visibleById(id)
     }
+}
+
+//turnSessionNumToDigital(25);
+//this section controls the seccion length display
+//try to implement some polymorphism here later
+
+function turnSessionNumToDigital(setOfDigits){
+    var id = "";
+	var arr =setOfDigits.split("");
+    clearSessionNumbers();
+	for(var i = 0; i < arr.length; i++){
+	  id = "num" + arr[i] + "digit" + (i+1) + "session";
+	  putNumber.visibleById(id);
+    }
+}
+function clearSessionNumbers(){
+   var id = "";
+   for(var i = 0; i <10; i++){
+	   for(var j = 1; j < 3; j++){
+		   id = "num" + i +"digit" + j + "session";
+		   clearById(id);
+		   id = "";
+	   }
+   }
+}
+var atp = 24;
+turnSessionNumToDigital("25")
+var anyTime = 0;
+document.getElementById("plusSessionButton").onclick = function(){
+	if(atp>25) atp = 25;
+	if(atp<0) atp = 0;
+		anyTime = atp;
+		if(anyTime.toString().length<2) anyTime = "0" + anyTime;
+		else anyTime = anyTime.toString();
+		turnSessionNumToDigital(anyTime);
+		atp++;	
+}
+document.getElementById("minusSessionButton").onclick = function(){
+	if(atp>25) atp = 25;
+	if(atp<0) atp = 0;
+		anyTime = atp;
+		if(anyTime.toString().length<2) anyTime = "0" + anyTime;
+		else anyTime = anyTime.toString();
+		turnSessionNumToDigital(anyTime);
+		atp--;	
 }
 
