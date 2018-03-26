@@ -105,28 +105,30 @@ function clearSessionNumbers(){
 
 var sessionTime = 25;
 turnSessionNumToDigital(sessionTime.toString());
-var anyTime = 0;
-function filterSessionTime(){
+
+function showSessionTime(){
 	if(sessionTime>25) sessionTime = 25;
 	else if(sessionTime<0) sessionTime = 0;
 	else {
 		stringSessionTime = sessionTime.toString();
 		if(stringSessionTime.length<2) stringSessionTime = "0" + stringSessionTime;
 		turnSessionNumToDigital(stringSessionTime);
-		//startPomodoroAt(stringSessionTime+":00");
+		startPomodoroAt(stringSessionTime+":00");
 	}
 }
-if(hasInterval==false){
-	document.getElementById("plusSessionButton").onclick = function(){
-		filterSessionTime();
-		sessionTime++;	
-	}
-	document.getElementById("minusSessionButton").onclick = function(){
-		filterSessionTime();
-		sessionTime--;		
-	}
-}else{
-	filterSessionTime();
+document.getElementById("plusSessionButton").onclick = function(){
+	if(hasInterval==false){
+		showSessionTime();
+		sessionTime++;
+	}		
 }
+document.getElementById("minusSessionButton").onclick = function(){
+	if(hasInterval==false){
+		showSessionTime();
+		sessionTime--;
+	}			
+}
+
+
 
 //END of DEMO
