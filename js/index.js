@@ -1,5 +1,5 @@
 //global variables
-const breakTime = "00:00";
+const finalTime = "00:00";
 var hasInterval = false;
 var pomodoroClock;
 var timeArr = [];
@@ -7,7 +7,13 @@ var mySeconds = 0;
 var myMinutes = 0;
 var myTime = 0;
 var setOfDigits = "";
-//sets the time at wich the clock will start
+var sessionTime = 25;
+var stringSessionTime = sessionTime.toString();
+var breakTime = 25;
+var stringBreakTime = breakTime.toString();
+var isOnBreak = false;
+
+//sets the time at wich the clock will start and show it onto the pomodoro display
 function startPomodoroAt(startTime){
 	timeArr = startTime.split(":");
 	mySeconds = timeArr[1];
@@ -17,7 +23,7 @@ function startPomodoroAt(startTime){
 	setOfDigits = myMinutes.toString() + mySeconds.toString();
 	turnNumToDigital(setOfDigits);
 }
-//by dafault:
+//by dafault the pomodoro starts at 25:00
 startPomodoroAt("25:00");
 //the main function that makes the clock work
 function doEveryScond(){
@@ -31,8 +37,16 @@ function doEveryScond(){
 	myTime = myMinutes + ":" + mySeconds;
 	setOfDigits = myMinutes.toString() + mySeconds.toString();
 	turnNumToDigital(setOfDigits);
-	  if(myTime==breakTime){
-		clearInterval(pomodoroClock);
+	  if(myTime==finalTime){
+		  if(isOnBreak){
+			startPomodoroAt(stringSessionTime+":00");
+            isOnBreak = false;
+		  }
+		  else{	
+            startPomodoroAt(stringBreakTime+":00");
+			isOnBreak = true;			
+		  }
+		
 	  }
 	
 }
@@ -102,10 +116,7 @@ function clearSessionNumbers(){
 	   }
    }
 }
-
-var sessionTime = 25;
-turnSessionNumToDigital(sessionTime.toString());
-
+turnSessionNumToDigital(stringSessionTime);
 function showSessionTime(){
 	if(sessionTime>25) sessionTime = 25;
 	else if(sessionTime<0) sessionTime = 0;
@@ -129,6 +140,49 @@ document.getElementById("minusSessionButton").onclick = function(){
 	}			
 }
 
+//this section controls the seccion length display
+//try to implement some polymorphism here later
 
+function turnBreakNumToDigital(setOfDigits){
+    var id = "";
+	var arr =setOfDigits.split("");
+    clearBreakNumbers();
+	for(var i = 0; i < arr.length; i++){
+	  id = "num" + arr[i] + "digit" + (i+1) + "break";
+	  visibleById(id);
+    }
+}
+function clearBreakNumbers(){
+   var id = "";
+   for(var i = 0; i <10; i++){
+	   for(var j = 1; j < 3; j++){
+		   id = "num" + i +"digit" + j + "break";
+		   clearById(id);
+		   id = "";
+	   }
+   }
+}
+turnBreakNumToDigital(stringBreakTime);
+function showBreakTime(){
+	if(breakTime>25) breakTime = 25;
+	else if(breakTime<0) breakTime = 0;
+	else {
+		stringBreakTime = breakTime.toString();
+		if(stringBreakTime.length<2) stringBreakTime = "0" + stringBreakTime;
+		turnBreakNumToDigital(stringBreakTime);
+	}
+}
+document.getElementById("plusBreakButton").onclick = function(){
+	if(hasInterval==false){
+		showBreakTime();
+		breakTime++;
+	}		
+}
+document.getElementById("minusBreakButton").onclick = function(){
+	if(hasInterval==false){
+		showBreakTime();
+		breakTime--;
+	}			
+}
 
 //END of DEMO
