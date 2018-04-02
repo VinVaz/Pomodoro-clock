@@ -2,8 +2,6 @@
 var hasInterval = false;
 var pomodoroClock;
 var sessionTime = 25, breakTime = 25;
-var stringSessionTime = sessionTime.toString();
-var stringBreakTime = breakTime.toString();
 
 //manipulates the time format
 var timeConverter = {
@@ -24,6 +22,7 @@ var timeConverter = {
 		return arr;
 	}
 }
+
 //clears sgv elements by their ID
 function clearElementById(id){
     document.getElementById(id).setAttribute("style", "visibility: hidden");
@@ -32,29 +31,36 @@ function clearElementById(id){
 function showElementById(id){
 	document.getElementById(id).setAttribute("style", "visibility: visible");
 }
-//controls what appears on to the main display of the clock
-var mainDisplay = {
-	clear: function(){
-	   var id = "";
-	   var limit = 5;   
-	   for(var i = 0; i <10; i++){
+
+//defines a display
+function Display(numOfDigits, type){
+	this.numOfDigits = numOfDigits;
+	if(type=="session"||type=="break") this.type = type;
+	else this.type = "";
+	this.clear = function(){
+	    var limit = this.numOfDigits + 1;      
+	    for(var i = 0; i <10; i++){
 			for(var j = 1; j < limit; j++){
-				id = "num" + i +"digit" + j;
+				var id = "num" + i +"digit" + j + this.type;
 				clearElementById(id);
-				id = "";
 			}
-	   }
-	},
-	setTime: function(time){
-		var id = "";
+	    }
+	}
+	this.setTime = function(time){
+		var limit = this.numOfDigits;
 		var arr = timeConverter.getArrayFrom(time);
 		this.clear()
-		for(var i = 0; i < arr.length; i++){
-		  id = "num" + arr[i] + "digit" + (i+1);
+		for(var i = 0; i < limit; i++){
+		  var id = "num" + arr[i] + "digit" + (i+1) + this.type;
 		  showElementById(id);
 		}
 	}
 }
+
+var mainDisplay = new Display(4, "main");
+var sessionDisplay = new Display(2, "session");
+var breakDisplay = new Display(2, "break");
+
 //gives the main properties of the pomodoro's clock
 var pomodoro = {
 	finalTime: "00:00",
@@ -62,7 +68,6 @@ var pomodoro = {
 	setStartTime: function(startTime){
 		this.myMinutes = timeConverter.getMinutesFrom(startTime);
 		this.mySeconds = timeConverter.getSecondsFrom(startTime);
-		mainDisplay.clear();
 		mainDisplay.setTime(startTime);
 	},
 	action: function(){
@@ -76,22 +81,24 @@ var pomodoro = {
 		
 		if(this.myTime==this.finalTime){
 			if(this.isOnBreak){
-				this.setStartTime(stringSessionTime+":00");
+				this.setStartTime(sessionTime+":00");
 				this.isOnBreak = false;
 			}
 			else{	
-				this.setStartTime(stringBreakTime+":00");
+				this.setStartTime(breakTime+":00");
 				this.isOnBreak = true;
 			}
 		}
 	}
 }
 //by dafault the pomodoro starts at 25:00
+sessionDisplay.setTime("25:00");
+breakDisplay.setTime("25:00");
 pomodoro.setStartTime("25:00");
+
 function doEverySecond(){
 	pomodoro.action();
 }
-
 var plusSessionButton = document.getElementById("plusSessionButton");
 var plusBreakButton = document.getElementById("plusBreakButton");
 var minusSessionButton = document.getElementById("minusSessionButton");
@@ -110,40 +117,24 @@ startButton.addEventListener("click", function(){
 	}
 })
 
-//this section controls the session length display
-//try to implement some polymorphism here later
-
-function turnSessionNumToDigital(strOfDigits){
-    var id = "";
-	var arr =strOfDigits.split("");
-    clearSessionNumbers();
-	for(var i = 0; i < arr.length; i++){
-	  id = "num" + arr[i] + "digit" + (i+1) + "session";
-	  showElementById(id);
-    }
+function limitSize(time){
+	if(time > 25) time = 25;
+	else if(time < 0) time = 0;
+	return time;
 }
-function clearSessionNumbers(){
-   var id = "";
-   for(var i = 0; i <10; i++){
-	   for(var j = 1; j < 3; j++){
-		   id = "num" + i +"digit" + j + "session";
-		   clearElementById(id);
-		   id = "";
-	   }
-   }
-}
-turnSessionNumToDigital(stringSessionTime);
-
+//this section controls the session and break length display
 function showSessionTime(){
-	if(sessionTime>25) sessionTime = 25;
-	else if(sessionTime<0) sessionTime = 0;
-	else {
-		stringSessionTime = sessionTime.toString();
-		if(stringSessionTime.length<2) stringSessionTime = "0" + stringSessionTime;
-		turnSessionNumToDigital(stringSessionTime);
-		pomodoro.setStartTime(stringSessionTime+":00");
-	}
+	var stringSessionTime = limitSize(sessionTime).toString();
+	if(stringSessionTime.length<2) stringSessionTime = "0" + stringSessionTime;
+	sessionDisplay.setTime(stringSessionTime + ":00");
+	pomodoro.setStartTime(stringSessionTime+":00");
 }
+function showBreakTime(){
+	var stringBreakTime = limitSize(breakTime).toString();
+	if(stringBreakTime.length<2) stringBreakTime = "0" + stringBreakTime;
+	breakDisplay.setTime(breakTime + ":00");	
+}
+
 plusSessionButton.onclick = function(){
 	if(hasInterval==false){
 		showSessionTime();
@@ -155,38 +146,6 @@ minusSessionButton.onclick = function(){
 		showSessionTime();
 		sessionTime--;
 	}			
-}
-
-//this section controls the seccion length display
-
-function turnBreakNumToDigital(setOfDigits){
-    var id = "";
-	var arr =setOfDigits.split("");
-    clearBreakNumbers();
-	for(var i = 0; i < arr.length; i++){
-	  id = "num" + arr[i] + "digit" + (i+1) + "break";
-	  showElementById(id);
-    }
-}
-function clearBreakNumbers(){
-   var id = "";
-   for(var i = 0; i <10; i++){
-	   for(var j = 1; j < 3; j++){
-		   id = "num" + i +"digit" + j + "break";
-		   clearElementById(id);
-		   id = "";
-	   }
-   }
-}
-turnBreakNumToDigital(stringBreakTime);
-function showBreakTime(){
-	if(breakTime>25) breakTime = 25;
-	else if(breakTime<0) breakTime = 0;
-	else{
-		stringBreakTime = breakTime.toString();
-		if(stringBreakTime.length<2) stringBreakTime = "0" + stringBreakTime;
-		turnBreakNumToDigital(stringBreakTime);
-	}
 }
 plusBreakButton.onclick = function(){
 	if(hasInterval==false){
