@@ -62,7 +62,7 @@ var pomodoro = {
 	setStartTime: function(startTime){
 		this.myMinutes = timeConverter.getMinutesFrom(startTime);
 		this.mySeconds = timeConverter.getSecondsFrom(startTime);
-		mainDisplay.clear()
+		mainDisplay.clear();
 		mainDisplay.setTime(startTime);
 	},
 	action: function(){
@@ -182,7 +182,7 @@ turnBreakNumToDigital(stringBreakTime);
 function showBreakTime(){
 	if(breakTime>25) breakTime = 25;
 	else if(breakTime<0) breakTime = 0;
-	else {
+	else{
 		stringBreakTime = breakTime.toString();
 		if(stringBreakTime.length<2) stringBreakTime = "0" + stringBreakTime;
 		turnBreakNumToDigital(stringBreakTime);
