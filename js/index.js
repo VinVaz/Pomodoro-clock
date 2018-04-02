@@ -1,14 +1,9 @@
 //global variables
-const finalTime = "00:00";
 var hasInterval = false;
 var pomodoroClock;
-var mySeconds = 0;
-var myMinutes = 0;
-var myTime = 0;
 var sessionTime = 25, breakTime = 25;
 var stringSessionTime = sessionTime.toString();
 var stringBreakTime = breakTime.toString();
-var isOnBreak = false;
 
 //manipulates the time format
 var timeConverter = {
@@ -24,41 +19,79 @@ var timeConverter = {
 		return (minutes + ":" + seconds);	
 	},
 	getArrayFrom: function(time){
-		var setOfDigits = (time.split(":")[0].toString() + time.split(":")[1].toString());
+		var setOfDigits = ((time.split(":"))[0] + (time.split(":"))[1]);
 		var arr = setOfDigits.split("");
 		return arr;
 	}
 }
-//sets the time at wich the clock will start and show it onto the pomodoro's display
-function startPomodoroAt(startTime){
-	myMinutes = timeConverter.getMinutesFrom(startTime);
-	mySeconds = timeConverter.getSecondsFrom(startTime);
-	clearNumbers();
-	turnToDigital(startTime);
+//clears sgv elements by their ID
+function clearElementById(id){
+    document.getElementById(id).setAttribute("style", "visibility: hidden");
+}
+//shows sgv elements by their ID
+function showElementById(id){
+	document.getElementById(id).setAttribute("style", "visibility: visible");
+}
+//controls what appears on to the main display of the clock
+var mainDisplay = {
+	clear: function(){
+	   var id = "";
+	   var limit = 5;   
+	   for(var i = 0; i <10; i++){
+			for(var j = 1; j < limit; j++){
+				id = "num" + i +"digit" + j;
+				clearElementById(id);
+				id = "";
+			}
+	   }
+	},
+	setTime: function(time){
+		var id = "";
+		var arr = timeConverter.getArrayFrom(time);
+		this.clear()
+		for(var i = 0; i < arr.length; i++){
+		  id = "num" + arr[i] + "digit" + (i+1);
+		  showElementById(id);
+		}
+	}
+}
+//gives the main properties of the pomodoro's clock
+var pomodoro = {
+	finalTime: "00:00",
+	isOnBreak: false,
+	setStartTime: function(startTime){
+		this.myMinutes = timeConverter.getMinutesFrom(startTime);
+		this.mySeconds = timeConverter.getSecondsFrom(startTime);
+		mainDisplay.clear()
+		mainDisplay.setTime(startTime);
+	},
+	action: function(){
+		this.mySeconds--;
+		if(this.mySeconds<0){
+			this.mySeconds = 59;
+			this.myMinutes--;
+		}
+		this.myTime = timeConverter.getTimeFrom(this.myMinutes, this.mySeconds);
+		mainDisplay.setTime(this.myTime);
+		
+		if(this.myTime==this.finalTime){
+			if(this.isOnBreak){
+				this.setStartTime(stringSessionTime+":00");
+				this.isOnBreak = false;
+			}
+			else{	
+				this.setStartTime(stringBreakTime+":00");
+				this.isOnBreak = true;
+			}
+		}
+	}
 }
 //by dafault the pomodoro starts at 25:00
-startPomodoroAt("25:00");
-//the main function that makes the clock work
+pomodoro.setStartTime("25:00");
 function doEverySecond(){
-	mySeconds--;
-	if(mySeconds<0){
-		mySeconds = 59;
-		myMinutes--;
-	}
-	myTime = timeConverter.getTimeFrom(myMinutes, mySeconds);
-	turnToDigital(myTime);
-	
-	if(myTime==finalTime){
-		if(isOnBreak){
-			startPomodoroAt(stringSessionTime+":00");
-			isOnBreak = false;
-		}
-		else{	
-			startPomodoroAt(stringBreakTime+":00");
-			isOnBreak = true;			
-		}
-	}
+	pomodoro.action();
 }
+
 var plusSessionButton = document.getElementById("plusSessionButton");
 var plusBreakButton = document.getElementById("plusBreakButton");
 var minusSessionButton = document.getElementById("minusSessionButton");
@@ -76,38 +109,7 @@ startButton.addEventListener("click", function(){
 		hasInterval = true;
 	}
 })
-//shows the time as digital numbers on display
-function turnToDigital(time){
-    var id = "";
-	var arr = timeConverter.getArrayFrom(time);
-	
-	clearNumbers();
-	for(var i = 0; i < arr.length; i++){
-	  id = "num" + arr[i] + "digit" + (i+1);
-	  showElementById(id);
-    }
-}
-//clear sgv elements by their ID
-function clearElementById(id){
-    document.getElementById(id).setAttribute("style", "visibility: hidden");
-	}
-function showElementById(id){
-	document.getElementById(id).setAttribute("style", "visibility: visible");
-}
-//clear all the numbers from the timer display	
-function clearNumbers(){
-   var id = "";
-   var limit = 5;   
-   for(var i = 0; i <10; i++){
-	   for(var j = 1; j < limit; j++){
-		   id = "num" + i +"digit" + j;
-		   clearElementById(id);
-		   id = "";
-	   }
-   }
-}
 
-//DEMO
 //this section controls the session length display
 //try to implement some polymorphism here later
 
@@ -139,7 +141,7 @@ function showSessionTime(){
 		stringSessionTime = sessionTime.toString();
 		if(stringSessionTime.length<2) stringSessionTime = "0" + stringSessionTime;
 		turnSessionNumToDigital(stringSessionTime);
-		startPomodoroAt(stringSessionTime+":00");
+		pomodoro.setStartTime(stringSessionTime+":00");
 	}
 }
 plusSessionButton.onclick = function(){
@@ -198,5 +200,3 @@ minusBreakButton.onclick = function(){
 		breakTime--;
 	}			
 }
-
-//END of DEMO
